@@ -1,8 +1,14 @@
+// The back end JavaScript code;
+
+// express web framework;
+// Requires:
 var express = require('express');
 var partials = require('express-partials'); // https://github.com/publicclass/express-partials
 var bodyParser = require('body-parser');
+
 var app = express();
 
+// 
 app.use(partials());
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +35,7 @@ app.get('/articles/new', function(req, res) {
 app.get('/articles/:index', function(req, res) {
     var index = parseInt(req.params.index);
     if (index < articles.length && index >= 0) {
-        res.render('articles/show', { article: articles[req.params.index] });
+        res.render('articles/show', { article: articles[req.params.index], index: req.params.index });
     } else {
         res.send('Error');
     }
@@ -44,6 +50,48 @@ app.get('/about', function(req, res) {
     res.render('about');
 });
 
+// function for edit 
+app.get('/articles/: index/edit', function(req, res){
+    var index = parseInt(req.params.index);
+    // Checks if the request exist;
+    if (index<articles.length && index>=0) {  
+        res.render('articles/edit', {articles: articles[index], index: index}); 
+    } else {
+        res.send('Error');
+    }
+});
+
+// The delete function and works for the delete button;
+app.delete('/articles/:index', function(req, res){
+    var index = parseInt(req.params.index);
+    if (index<articles.length && index>=0){
+        articles.splice(index, 1);
+        res.send('success');
+    } else {
+        res.send('Error!');
+    }
+});
+
+// The put function for changing the body;
+app.put("/articles/:index", function(req, res){
+    var index = parseInt(req.params.index);
+    console.log(req.body);
+    if (index<articles.length && index>=0) {
+        articles[req.params.index] = req.body;
+        res.send("success!");
+    } else {
+        res.send("Error!");
+    }
+});
+
 app.listen(3000, function() {
     console.log("You're listening to the smooth sounds of port 3000 in the morning");
 });
+
+
+
+
+
+
+
+
